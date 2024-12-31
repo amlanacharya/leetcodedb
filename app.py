@@ -3,13 +3,13 @@ from db import execute_query, get_tables
 
 # Add this at the very start to help debug
 st.set_page_config(page_title="LeetCode SQL Practice", layout="wide")
-st.write("Starting app...")  # Debug line
+
 
 try:
     # Get list of tables
-    st.write("Attempting to connect to database...")  # Debug line
+    
     tables = get_tables()
-    st.write(f"Found {len(tables)} tables")  # Debug line
+   
     
     # Create main layout
     left_col, right_col = st.columns([3, 1])
