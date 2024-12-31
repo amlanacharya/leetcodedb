@@ -1,7 +1,7 @@
 import streamlit as st
 import psycopg2
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 @st.cache_resource
 def get_database_connection():
@@ -17,9 +17,9 @@ def get_database_connection():
             'connect_timeout': 30
         })
         
-        # Test connection
+        # Test connection with proper SQLAlchemy syntax
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
             
         return engine
     except Exception as e:
@@ -32,21 +32,25 @@ def get_tables():
     if engine is None:
         return []
     
-    query = """
-    SELECT table_name 
-    FROM information_schema.tables 
-    WHERE table_schema = 'public'
-    ORDER BY table_name
-    """
-    return pd.read_sql_query(query, engine)['table_name'].tolist()
+    try:
+        query = text("""
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public'
+        ORDER BY table_name
+        """)
+        return pd.read_sql_query(query, engine)['table_name'].tolist()
+    except Exception as e:
+        st.error(f"Error getting tables: {e}")
+        return []
 
 def execute_query(query):
     """Execute SQL query and return results as DataFrame"""
     try:
         engine = get_database_connection()
         if engine is None:
-            return None
+            raise Exception("Database connection failed")
         
-        return pd.read_sql_query(query, engine)
+        return pd.read_sql_query(text(query), engine)
     except Exception as e:
         raise Exception(f"Error executing query: {str(e)}")
