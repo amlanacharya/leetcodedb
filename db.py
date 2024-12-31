@@ -3,12 +3,11 @@ import psycopg2
 import pandas as pd
 from sqlalchemy import create_engine
 
-DATABASE_URL = "postgresql://neondb_owner:8bxtCjgoMp3e@ep-crimson-mud-a1z41eov.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
-
 @st.cache_resource
 def get_database_connection():
     """Create and cache database connection"""
     try:
+        DATABASE_URL = st.secrets["DATABASE_URL"]
         engine = create_engine(DATABASE_URL)
         return engine
     except Exception as e:
