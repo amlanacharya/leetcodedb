@@ -2,9 +2,9 @@ import streamlit as st
 from db import execute_query, get_tables
 
 # Add this at the very start to help debug
-st.set_page_config(page_title="LeetCode SQL Practice", layout="wide")
+st.set_page_config(page_title="Gripdata SQL Practice", layout="wide")
 
-
+st.title("Gripdata SQL Practice")
 try:
     # Get list of tables
     
