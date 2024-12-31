@@ -1,13 +1,15 @@
 import streamlit as st
 from db import execute_query, get_tables
 
+# Add this at the very start to help debug
 st.set_page_config(page_title="LeetCode SQL Practice", layout="wide")
-
-st.title("LeetCode PostgreSQL Practice")
+st.write("Starting app...")  # Debug line
 
 try:
     # Get list of tables
+    st.write("Attempting to connect to database...")  # Debug line
     tables = get_tables()
+    st.write(f"Found {len(tables)} tables")  # Debug line
     
     # Create main layout
     left_col, right_col = st.columns([3, 1])
@@ -57,7 +59,7 @@ try:
                     
             except Exception as e:
                 st.error(f"Error executing query: {str(e)}")
-
+    
     # Add footer with attribution
     st.markdown("""
     ---
@@ -67,4 +69,6 @@ try:
     """)
 
 except Exception as e:
-    st.error(f"Error connecting to database: {str(e)}") 
+    st.error(f"Error in main app: {str(e)}")
+    st.error("Full error details:")
+    st.exception(e) 

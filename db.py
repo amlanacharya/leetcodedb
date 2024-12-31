@@ -7,11 +7,23 @@ from sqlalchemy import create_engine
 def get_database_connection():
     """Create and cache database connection"""
     try:
+        if "DATABASE_URL" not in st.secrets:
+            st.error("DATABASE_URL not found in secrets!")
+            return None
+            
         DATABASE_URL = st.secrets["DATABASE_URL"]
-        engine = create_engine(DATABASE_URL)
+        engine = create_engine(DATABASE_URL, connect_args={
+            'sslmode': 'require',
+            'connect_timeout': 30
+        })
+        
+        # Test connection
+        with engine.connect() as conn:
+            conn.execute("SELECT 1")
+            
         return engine
     except Exception as e:
-        st.error(f"Error connecting to PostgreSQL: {e}")
+        st.error(f"Database connection error: {str(e)}")
         return None
 
 def get_tables():
